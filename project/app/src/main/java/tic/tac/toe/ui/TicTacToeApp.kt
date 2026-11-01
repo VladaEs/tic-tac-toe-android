@@ -16,7 +16,6 @@ private enum class AppScreen {
     GAME,
     RULES,
     ABOUT,
-    EXPERT,
 }
 
 @Composable
@@ -55,12 +54,8 @@ fun TicTacToeApp() {
                     sideChoice = sideChoice,
                     boardConfig = boardConfig,
                 )
-                if (difficulty == Difficulty.EXPERT) {
-                    screenName = AppScreen.EXPERT.name
-                } else {
-                    activeSettings = settings
-                    screenName = AppScreen.GAME.name
-                }
+                activeSettings = settings
+                screenName = AppScreen.GAME.name
             },
             onRules = { screenName = AppScreen.RULES.name },
             onAbout = { screenName = AppScreen.ABOUT.name },
@@ -84,12 +79,6 @@ fun TicTacToeApp() {
         AppScreen.ABOUT -> InfoScreen(
             title = androidx.compose.ui.res.stringResource(tic.tac.toe.R.string.about),
             body = androidx.compose.ui.res.stringResource(tic.tac.toe.R.string.about_text),
-            onBack = { screenName = AppScreen.MENU.name },
-        )
-
-        AppScreen.EXPERT -> InfoScreen(
-            title = androidx.compose.ui.res.stringResource(tic.tac.toe.R.string.expert_title),
-            body = androidx.compose.ui.res.stringResource(tic.tac.toe.R.string.expert_message),
             onBack = { screenName = AppScreen.MENU.name },
         )
     }

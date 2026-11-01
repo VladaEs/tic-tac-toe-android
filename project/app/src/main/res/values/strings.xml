@@ -15,8 +15,6 @@
     <string name="beginner_description">Android chooses random moves</string>
     <string name="experienced">Experienced</string>
     <string name="experienced_description">Android wins, blocks threats, or makes a random move</string>
-    <string name="expert">Expert</string>
-    <string name="expert_description">Coming soon</string>
     <string name="choose_side">Choose your side</string>
     <string name="random">Random</string>
     <string name="start">Start</string>
@@ -37,8 +35,6 @@
     <string name="leave_game_message">The current series score will be reset when you start a new game.</string>
     <string name="leave">Leave</string>
     <string name="cancel">Cancel</string>
-    <string name="expert_title">Expert mode</string>
-    <string name="expert_message">This mode is under development.</string>
     <string name="rules_text">X always makes the first move. Choose the board width, height, and number of consecutive marks required to win. Take turns placing marks on the board. The first side to make the required horizontal, vertical, or diagonal line wins. If the board is full and nobody has completed a line, the game is a draw.\n\nBeginner chooses random valid moves. Experienced first looks for a winning move, then blocks an immediate threat, and otherwise chooses a random valid move.</string>
     <string name="about_text">Tic Tac Toe is a learning project built with Kotlin, Jetpack Compose, and Material 3.</string>
     <string name="empty_cell_description">Empty cell %1$d</string>

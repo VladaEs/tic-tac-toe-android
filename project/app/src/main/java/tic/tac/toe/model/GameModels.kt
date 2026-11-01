@@ -10,7 +10,6 @@ enum class Mark {
 enum class Difficulty {
     BEGINNER,
     EXPERIENCED,
-    EXPERT,
 }
 
 enum class SideChoice {

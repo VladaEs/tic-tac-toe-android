@@ -178,12 +178,10 @@ fun MainMenuScreen(
                 val title = when (option) {
                     Difficulty.BEGINNER -> stringResource(R.string.beginner)
                     Difficulty.EXPERIENCED -> stringResource(R.string.experienced)
-                    Difficulty.EXPERT -> stringResource(R.string.expert)
                 }
                 val description = when (option) {
                     Difficulty.BEGINNER -> stringResource(R.string.beginner_description)
                     Difficulty.EXPERIENCED -> stringResource(R.string.experienced_description)
-                    Difficulty.EXPERT -> stringResource(R.string.expert_description)
                 }
                 ChoiceRow(
                     title = title,

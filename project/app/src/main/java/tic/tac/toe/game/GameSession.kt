@@ -56,7 +56,6 @@ class GameSession(
                 androidMark = androidMark,
                 random = random,
             )
-            Difficulty.EXPERT -> null
         }
 
         if (move != null) {

@@ -7,6 +7,8 @@ import tic.tac.toe.model.CellPosition
 import tic.tac.toe.model.Mark
 
 object GameEngine {
+    const val EXPERIENCED_ERROR_CHANCE = 0.0 // set to 0.15 to get 15% change of mistake
+
     private data class Direction(
         val rowStep: Int,
         val columnStep: Int,
@@ -61,8 +63,15 @@ object GameEngine {
     fun chooseExperiencedMove(
         board: BoardState,
         androidMark: Mark,
+        errorChance: Double = EXPERIENCED_ERROR_CHANCE,
         random: Random = Random.Default,
     ): CellPosition? {
+        require(errorChance in 0.0..1.0) { "Error chance must be between 0.0 and 1.0" }
+
+        if (errorChance > 0.0 && random.nextDouble() < errorChance) {
+            return chooseBeginnerMove(board, random)
+        }
+
         return findImmediateWinningMove(board, androidMark)
             ?: findImmediateWinningMove(board, androidMark.opposite())
             ?: chooseBeginnerMove(board, random)

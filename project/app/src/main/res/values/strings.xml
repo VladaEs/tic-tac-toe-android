@@ -1,8 +1,15 @@
 <resources>
     <string name="app_name">Tic Tac Toe</string>
-    <string name="app_subtitle">Challenge Android in the classic 3×3 game</string>
+    <string name="app_subtitle">Choose your board and challenge Android</string>
     <string name="player_name">Player name</string>
     <string name="player_name_hint">Player 1</string>
+    <string name="board_setup">Board setup</string>
+    <string name="board_width">Width</string>
+    <string name="board_height">Height</string>
+    <string name="marks_to_win">To win</string>
+    <string name="number_range">%1$d–%2$d</string>
+    <string name="select_board_size_first">Set size</string>
+    <string name="board_setup_summary">%1$d × %2$d = %3$d cells; %4$d marks to win</string>
     <string name="difficulty">Difficulty</string>
     <string name="beginner">Beginner</string>
     <string name="beginner_description">Android chooses random moves</string>
@@ -19,6 +26,7 @@
     <string name="main_menu">Main Menu</string>
     <string name="score_format">%1$s %2$d : %3$d Android</string>
     <string name="player_side_format">You play as %1$s</string>
+    <string name="active_board_summary">Board %1$d × %2$d · %3$d to win</string>
     <string name="your_turn">Your turn</string>
     <string name="android_turn">Android is thinking…</string>
     <string name="you_win">You win!</string>
@@ -31,7 +39,7 @@
     <string name="cancel">Cancel</string>
     <string name="expert_title">Expert mode</string>
     <string name="expert_message">This mode is under development.</string>
-    <string name="rules_text">X always makes the first move. Take turns placing marks on the 3×3 board. The first side to place three marks in a horizontal, vertical, or diagonal line wins. If the board is full and nobody has three in a row, the game is a draw.\n\nBeginner chooses random valid moves. Experienced first looks for a winning move, then blocks an immediate threat, and otherwise chooses a random valid move.</string>
+    <string name="rules_text">X always makes the first move. Choose the board width, height, and number of consecutive marks required to win. Take turns placing marks on the board. The first side to make the required horizontal, vertical, or diagonal line wins. If the board is full and nobody has completed a line, the game is a draw.\n\nBeginner chooses random valid moves. Experienced first looks for a winning move, then blocks an immediate threat, and otherwise chooses a random valid move.</string>
     <string name="about_text">Tic Tac Toe is a learning project built with Kotlin, Jetpack Compose, and Material 3.</string>
     <string name="empty_cell_description">Empty cell %1$d</string>
     <string name="marked_cell_description">Cell %1$d: %2$s</string>

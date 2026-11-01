@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import tic.tac.toe.model.BoardConfig
 import tic.tac.toe.model.Difficulty
 import tic.tac.toe.model.GameSettings
 import tic.tac.toe.model.SideChoice
@@ -24,6 +25,9 @@ fun TicTacToeApp() {
     var playerName by rememberSaveable { mutableStateOf("") }
     var difficultyName by rememberSaveable { mutableStateOf(Difficulty.BEGINNER.name) }
     var sideChoiceName by rememberSaveable { mutableStateOf(SideChoice.X.name) }
+    var boardWidth by rememberSaveable { mutableStateOf(BoardConfig.CLASSIC.width.toString()) }
+    var boardHeight by rememberSaveable { mutableStateOf(BoardConfig.CLASSIC.height.toString()) }
+    var marksToWin by rememberSaveable { mutableStateOf(BoardConfig.CLASSIC.marksToWin.toString()) }
     var activeSettings by remember { mutableStateOf<GameSettings?>(null) }
 
     val screen = AppScreen.valueOf(screenName)
@@ -35,14 +39,21 @@ fun TicTacToeApp() {
             playerName = playerName,
             difficulty = difficulty,
             sideChoice = sideChoice,
+            boardWidth = boardWidth,
+            boardHeight = boardHeight,
+            marksToWin = marksToWin,
             onPlayerNameChange = { playerName = it },
             onDifficultyChange = { difficultyName = it.name },
             onSideChoiceChange = { sideChoiceName = it.name },
-            onStart = {
+            onBoardWidthChange = { boardWidth = it },
+            onBoardHeightChange = { boardHeight = it },
+            onMarksToWinChange = { marksToWin = it },
+            onStart = { boardConfig ->
                 val settings = GameSettings(
                     playerName = playerName.trim().ifBlank { "Player 1" },
                     difficulty = difficulty,
                     sideChoice = sideChoice,
+                    boardConfig = boardConfig,
                 )
                 if (difficulty == Difficulty.EXPERT) {
                     screenName = AppScreen.EXPERT.name

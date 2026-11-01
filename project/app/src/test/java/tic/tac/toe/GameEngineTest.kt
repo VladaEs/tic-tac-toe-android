@@ -133,6 +133,29 @@ class GameEngineTest {
     }
 
     @Test
+    fun `experienced never ignores a winning move when error chance is zero`() {
+        val board = BoardState(
+            config = BoardConfig.CLASSIC,
+            cells = listOf(
+                Mark.X, Mark.X, null,
+                Mark.O, null, null,
+                null, null, null,
+            ),
+        )
+
+        repeat(100) { seed ->
+            val move = GameEngine.chooseExperiencedMove(
+                board = board,
+                androidMark = Mark.X,
+                errorChance = 0.0,
+                random = Random(seed),
+            )
+
+            assertEquals("Failed for random seed $seed", cell(0, 2), move)
+        }
+    }
+
+    @Test
     fun `experienced blocks an immediate loss`() {
         val board = BoardState(
             config = BoardConfig.CLASSIC,

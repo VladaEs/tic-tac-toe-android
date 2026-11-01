@@ -6,13 +6,12 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
@@ -100,14 +99,33 @@ fun GameScreen(
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
-
-            Spacer(Modifier.weight(1f))
-
-            GameBoard(
-                board = session.board,
-                enabled = !session.isAndroidTurn && session.outcome == null,
-                onCellClick = session::playPlayerMove,
+            Text(
+                text = stringResource(
+                    R.string.active_board_summary,
+                    session.board.width,
+                    session.board.height,
+                    session.board.marksToWin,
+                ),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
+
+            Box(
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxWidth()
+                    .padding(vertical = 12.dp),
+                contentAlignment = Alignment.Center,
+            ) {
+                GameBoard(
+                    board = session.board,
+                    enabled = !session.isAndroidTurn && session.outcome == null,
+                    onCellClick = session::playPlayerMove,
+                    modifier = Modifier
+                        .sizeIn(maxWidth = 360.dp, maxHeight = 360.dp)
+                        .aspectRatio(session.board.width.toFloat() / session.board.height),
+                )
+            }
 
             Text(
                 text = if (session.isAndroidTurn) {
@@ -115,12 +133,10 @@ fun GameScreen(
                 } else {
                     stringResource(R.string.your_turn)
                 },
-                modifier = Modifier.padding(top = 20.dp),
+                modifier = Modifier.padding(top = 8.dp, bottom = 4.dp),
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.primary,
             )
-
-            Spacer(Modifier.weight(1f))
         }
     }
 
@@ -156,18 +172,29 @@ private fun GameBoard(
     board: BoardState,
     enabled: Boolean,
     onCellClick: (CellPosition) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
+    val largestDimension = maxOf(board.width, board.height)
+    val cellSpacing = when {
+        largestDimension <= 3 -> 6.dp
+        largestDimension <= 5 -> 4.dp
+        else -> 2.dp
+    }
+    val markFontSize = when {
+        largestDimension <= 3 -> 48.sp
+        largestDimension <= 5 -> 34.sp
+        largestDimension <= 8 -> 24.sp
+        else -> 18.sp
+    }
+
     Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .widthIn(max = 360.dp)
-            .aspectRatio(board.width.toFloat() / board.height),
-        verticalArrangement = Arrangement.spacedBy(6.dp),
+        modifier = modifier,
+        verticalArrangement = Arrangement.spacedBy(cellSpacing),
     ) {
         repeat(board.height) { row ->
             Row(
                 modifier = Modifier.weight(1f),
-                horizontalArrangement = Arrangement.spacedBy(6.dp),
+                horizontalArrangement = Arrangement.spacedBy(cellSpacing),
             ) {
                 repeat(board.width) { column ->
                     val position = CellPosition(row = row, column = column)
@@ -193,7 +220,7 @@ private fun GameBoard(
                         Box(contentAlignment = Alignment.Center) {
                             Text(
                                 text = mark?.name.orEmpty(),
-                                fontSize = 48.sp,
+                                fontSize = markFontSize,
                                 fontWeight = FontWeight.Bold,
                                 color = when (mark) {
                                     Mark.X -> MaterialTheme.colorScheme.primary

@@ -1,6 +1,7 @@
 package tic.tac.toe.ui
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -24,23 +25,63 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import tic.tac.toe.R
+import tic.tac.toe.model.BoardConfig
 import tic.tac.toe.model.Difficulty
 import tic.tac.toe.model.SideChoice
+
+private const val MIN_BOARD_SIZE = 3
+private const val MAX_BOARD_SIZE = 10
+private const val MIN_MARKS_TO_WIN = 3
+private const val MAX_NUMBER_LENGTH = 2
 
 @Composable
 fun MainMenuScreen(
     playerName: String,
     difficulty: Difficulty,
     sideChoice: SideChoice,
+    boardWidth: String,
+    boardHeight: String,
+    marksToWin: String,
     onPlayerNameChange: (String) -> Unit,
     onDifficultyChange: (Difficulty) -> Unit,
     onSideChoiceChange: (SideChoice) -> Unit,
-    onStart: () -> Unit,
+    onBoardWidthChange: (String) -> Unit,
+    onBoardHeightChange: (String) -> Unit,
+    onMarksToWinChange: (String) -> Unit,
+    onStart: (BoardConfig) -> Unit,
     onRules: () -> Unit,
     onAbout: () -> Unit,
 ) {
+    val validWidth = boardWidth.toIntOrNull()
+        ?.takeIf { it in MIN_BOARD_SIZE..MAX_BOARD_SIZE }
+    val validHeight = boardHeight.toIntOrNull()
+        ?.takeIf { it in MIN_BOARD_SIZE..MAX_BOARD_SIZE }
+    val maximumWinningLength = if (validWidth != null && validHeight != null) {
+        maxOf(validWidth, validHeight)
+    } else {
+        null
+    }
+    val validMarksToWin = marksToWin.toIntOrNull()?.takeIf { requiredMarks ->
+        maximumWinningLength != null &&
+            requiredMarks in MIN_MARKS_TO_WIN..maximumWinningLength
+    }
+    val boardConfig = if (
+        validWidth != null &&
+        validHeight != null &&
+        validMarksToWin != null
+    ) {
+        BoardConfig(
+            width = validWidth,
+            height = validHeight,
+            marksToWin = validMarksToWin,
+        )
+    } else {
+        null
+    }
+
     Scaffold { innerPadding ->
         Column(
             modifier = Modifier
@@ -73,6 +114,64 @@ fun MainMenuScreen(
             )
 
             Spacer(Modifier.height(24.dp))
+
+            SelectionGroupTitle(stringResource(R.string.board_setup))
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                BoardNumberField(
+                    value = boardWidth,
+                    onValueChange = { onBoardWidthChange(sanitizeNumberInput(it)) },
+                    label = stringResource(R.string.board_width),
+                    isError = validWidth == null,
+                    supportingText = stringResource(
+                        R.string.number_range,
+                        MIN_BOARD_SIZE,
+                        MAX_BOARD_SIZE,
+                    ),
+                    modifier = Modifier.weight(1f),
+                )
+                BoardNumberField(
+                    value = boardHeight,
+                    onValueChange = { onBoardHeightChange(sanitizeNumberInput(it)) },
+                    label = stringResource(R.string.board_height),
+                    isError = validHeight == null,
+                    supportingText = stringResource(
+                        R.string.number_range,
+                        MIN_BOARD_SIZE,
+                        MAX_BOARD_SIZE,
+                    ),
+                    modifier = Modifier.weight(1f),
+                )
+                BoardNumberField(
+                    value = marksToWin,
+                    onValueChange = { onMarksToWinChange(sanitizeNumberInput(it)) },
+                    label = stringResource(R.string.marks_to_win),
+                    isError = validMarksToWin == null,
+                    supportingText = maximumWinningLength?.let { maximum ->
+                        stringResource(R.string.number_range, MIN_MARKS_TO_WIN, maximum)
+                    } ?: stringResource(R.string.select_board_size_first),
+                    modifier = Modifier.weight(1f),
+                )
+            }
+
+            boardConfig?.let { config ->
+                Text(
+                    text = stringResource(
+                        R.string.board_setup_summary,
+                        config.width,
+                        config.height,
+                        config.cellCount,
+                        config.marksToWin,
+                    ),
+                    modifier = Modifier.fillMaxWidth(),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+
+            Spacer(Modifier.height(20.dp))
 
             SelectionGroupTitle(stringResource(R.string.difficulty))
             Difficulty.entries.forEach { option ->
@@ -120,7 +219,8 @@ fun MainMenuScreen(
             Spacer(Modifier.height(28.dp))
 
             Button(
-                onClick = onStart,
+                onClick = { boardConfig?.let(onStart) },
+                enabled = boardConfig != null,
                 modifier = Modifier.fillMaxWidth(),
             ) {
                 Text(stringResource(R.string.start))
@@ -148,6 +248,31 @@ fun MainMenuScreen(
         }
     }
 }
+
+@Composable
+private fun BoardNumberField(
+    value: String,
+    onValueChange: (String) -> Unit,
+    label: String,
+    isError: Boolean,
+    supportingText: String,
+    modifier: Modifier = Modifier,
+) {
+    OutlinedTextField(
+        value = value,
+        onValueChange = onValueChange,
+        modifier = modifier,
+        label = { Text(label) },
+        supportingText = { Text(supportingText) },
+        isError = isError,
+        singleLine = true,
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+    )
+}
+
+private fun sanitizeNumberInput(value: String): String = value
+    .filter(Char::isDigit)
+    .take(MAX_NUMBER_LENGTH)
 
 @Composable
 private fun SelectionGroupTitle(text: String) {
